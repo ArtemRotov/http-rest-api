@@ -1,2 +1,3 @@
 bind_server = ":8080"
 log_level = "debug"
+database_url = "user=root password=root host=localhost dbname=db sslmode=disable"

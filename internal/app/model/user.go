@@ -6,10 +6,10 @@ import (
 )
 
 type User struct {
-	ID                int    `validate:"-"`
-	Email             string `validate:"email"`
-	Password          string `validate:"required_without=EncryptedPassword,omitempty,min=6,max=30"`
-	EncryptedPassword string `validate:"-"`
+	ID                int    `validate:"-" json:"id"`
+	Email             string `validate:"email" json:"email"`
+	Password          string `validate:"required_without=EncryptedPassword,omitempty,min=6,max=30" json:"password,omitempty"`
+	EncryptedPassword string `validate:"-" json:"-"`
 }
 
 var validate *validator.Validate
@@ -33,6 +33,14 @@ func (u *User) BeforeCreate() error {
 		u.EncryptedPassword = enc
 	}
 	return nil
+}
+
+func (u *User) Sanitize() {
+	u.Password = ""
+}
+
+func (u *User) PasswordIsValid(password string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(u.EncryptedPassword), []byte(password)) == nil
 }
 
 func encryptString(s string) (string, error) {

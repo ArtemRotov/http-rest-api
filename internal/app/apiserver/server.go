@@ -62,6 +62,7 @@ func (s *server) configureRouter() {
 	s.router.Use(s.setRequestID)
 	s.router.Use(s.logRequest)
 	s.router.Use(handlers.CORS(handlers.AllowedOrigins([]string{"*"})))
+	s.router.HandleFunc("/", s.handleRoot()).Methods("GET")
 	s.router.HandleFunc("/users", s.handleUsersCreate()).Methods("POST")
 	s.router.HandleFunc("/sessions", s.handleSessionsCreate()).Methods("POST")
 
@@ -128,6 +129,13 @@ func (s *server) authenticateUser(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), ctxKeyUser, u)))
 	})
+}
+
+func (s *server) handleRoot() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("hello"))
+	}
 }
 
 func (s *server) handleUsersCreate() http.HandlerFunc {

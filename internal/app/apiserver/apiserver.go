@@ -8,9 +8,6 @@ import (
 	"github.com/gorilla/sessions"
 )
 
-//var _ store.Store = &teststore.Store{}
-//var _ store.Store = &sqlstore.Store{}
-
 func Start(config *Config) error {
 
 	db, err := newDB(config.DatabaseURL)
